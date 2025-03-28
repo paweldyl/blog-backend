@@ -59,6 +59,8 @@ type Comment struct {
 	Text        string    `json:"text"`
 	AuthorLogin string    `json:"author_login"`
 	PostID      uuid.UUID `json:"post_id"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type Post struct {
@@ -69,7 +71,7 @@ type Post struct {
 	AuthorLogin    string    `json:"author_login"`
 	LikesAmount    int32     `json:"likes_amount"`
 	DislikesAmount int32     `json:"dislikes_amount"`
-	EditedAt       time.Time `json:"edited_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 	CreatedAt      time.Time `json:"created_at"`
 }
 
@@ -77,6 +79,8 @@ type PostsLike struct {
 	UserLogin string    `json:"user_login"`
 	PostID    uuid.UUID `json:"post_id"`
 	Value     LikeValue `json:"value"`
+	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Session struct {
@@ -92,6 +96,6 @@ type User struct {
 	Login          string    `json:"login"`
 	HashedPassword string    `json:"hashed_password"`
 	Username       string    `json:"username"`
-	EditedAt       time.Time `json:"edited_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 	CreatedAt      time.Time `json:"created_at"`
 }

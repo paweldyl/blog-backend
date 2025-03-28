@@ -7,7 +7,7 @@ CREATE TABLE "users" (
   "login" varchar PRIMARY KEY,
   "hashed_password" varchar NOT NULL,
   "username" varchar UNIQUE NOT NULL,
-  "edited_at" timestamptz NOT NULL DEFAULT (now()),
+  "updated_at" timestamptz NOT NULL DEFAULT (now()),
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -28,21 +28,25 @@ CREATE TABLE "posts" (
   "author_login" varchar NOT NULL,
   "likes_amount" int NOT NULL DEFAULT 0,
   "dislikes_amount" int NOT NULL DEFAULT 0,
-  "edited_at" timestamptz NOT NULL DEFAULT (now()),
+  "updated_at" timestamptz NOT NULL DEFAULT (now()),
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "posts_likes" (
   "user_login" varchar NOT NULL,
   "post_id" uuid NOT NULL,
-  "value" like_value NOT NULL
+  "value" like_value NOT NULL,
+  "updated_at" timestamptz NOT NULL DEFAULT (now()),
+  "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "comments" (
   "id" uuid PRIMARY KEY,
   "text" varchar NOT NULL,
   "author_login" varchar NOT NULL,
-  "post_id" uuid NOT NULL
+  "post_id" uuid NOT NULL,
+  "updated_at" timestamptz NOT NULL DEFAULT (now()),
+  "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE INDEX ON "sessions" ("login");

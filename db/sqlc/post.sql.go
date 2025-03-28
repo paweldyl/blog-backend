@@ -12,7 +12,7 @@ import (
 )
 
 const getPostForUpdate = `-- name: GetPostForUpdate :one
-SELECT id, title, short_desc, description, author_login, likes_amount, dislikes_amount, edited_at, created_at FROM posts
+SELECT id, title, short_desc, description, author_login, likes_amount, dislikes_amount, updated_at, created_at FROM posts
 WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE
 `
 
@@ -27,7 +27,7 @@ func (q *Queries) GetPostForUpdate(ctx context.Context, id uuid.UUID) (Post, err
 		&i.AuthorLogin,
 		&i.LikesAmount,
 		&i.DislikesAmount,
-		&i.EditedAt,
+		&i.UpdatedAt,
 		&i.CreatedAt,
 	)
 	return i, err

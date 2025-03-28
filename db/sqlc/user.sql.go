@@ -18,7 +18,7 @@ INSERT INTO users (
 ) VALUES (
   $1, $2, $3
 )
-RETURNING login, hashed_password, username, edited_at, created_at
+RETURNING login, hashed_password, username, updated_at, created_at
 `
 
 type CreateUserParams struct {
@@ -34,14 +34,14 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Login,
 		&i.HashedPassword,
 		&i.Username,
-		&i.EditedAt,
+		&i.UpdatedAt,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getUser = `-- name: GetUser :one
-SELECT login, hashed_password, username, edited_at, created_at FROM users
+SELECT login, hashed_password, username, updated_at, created_at FROM users
 WHERE login = $1 LIMIT 1
 `
 
@@ -52,14 +52,14 @@ func (q *Queries) GetUser(ctx context.Context, login string) (User, error) {
 		&i.Login,
 		&i.HashedPassword,
 		&i.Username,
-		&i.EditedAt,
+		&i.UpdatedAt,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getUserForUpdate = `-- name: GetUserForUpdate :one
-SELECT login, hashed_password, username, edited_at, created_at FROM users
+SELECT login, hashed_password, username, updated_at, created_at FROM users
 WHERE login = $1 LIMIT 1 FOR NO KEY UPDATE
 `
 
@@ -70,7 +70,7 @@ func (q *Queries) GetUserForUpdate(ctx context.Context, login string) (User, err
 		&i.Login,
 		&i.HashedPassword,
 		&i.Username,
-		&i.EditedAt,
+		&i.UpdatedAt,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -83,7 +83,7 @@ SET
   -- profile_image = COALESCE(sqlc.narg('profile_image'), profile_image),
   updated_at = NOW()
 WHERE login = $1
-RETURNING login, hashed_password, username, edited_at, created_at
+RETURNING login, hashed_password, username, updated_at, created_at
 `
 
 type UpdateUserParams struct {
@@ -98,7 +98,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Login,
 		&i.HashedPassword,
 		&i.Username,
-		&i.EditedAt,
+		&i.UpdatedAt,
 		&i.CreatedAt,
 	)
 	return i, err

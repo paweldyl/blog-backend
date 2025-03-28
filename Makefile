@@ -21,12 +21,6 @@ migratedown:
 migratedown1:
 	migrate -path db/migration -database "$(DB_URL)" -verbose down 1
 
-db_docs:
-	dbdocs build doc/db.dbml
-
-db_schema:
-	dbml2sql --postgres -o doc/schema.sql
-
 sqlc:
 	sqlc generate
 
@@ -37,7 +31,7 @@ server:
 	go run main.go
 
 mock:
-	mockgen -package mockdb -destination db/mock/store.go github.com/paweldyl/simplebank/db/sqlc Store
+	mockgen -package mockdb -destination db/mock/store.go github.com/paweldyl/blog-backend/db/sqlc Store
 
 proto:
 	rm -f pb/*.go
@@ -46,6 +40,6 @@ proto:
     proto/*.proto
 
 evans:
-	./evans --host localhost --port 9090 -r repl
+	./evans --host localhost --port 8080 -r repl
 
-.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 db_docs db_schema sqlc test server mock proto evans
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 sqlc test server mock proto evans

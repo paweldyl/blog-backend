@@ -12,7 +12,7 @@ import (
 )
 
 const getPostLikeForUpdate = `-- name: GetPostLikeForUpdate :one
-SELECT user_login, post_id, value FROM posts_likes
+SELECT user_login, post_id, value, updated_at, created_at FROM posts_likes
 WHERE user_login=$1 AND post_id=$2 LIMIT 1 FOR NO KEY UPDATE
 `
 
@@ -24,6 +24,12 @@ type GetPostLikeForUpdateParams struct {
 func (q *Queries) GetPostLikeForUpdate(ctx context.Context, arg GetPostLikeForUpdateParams) (PostsLike, error) {
 	row := q.db.QueryRowContext(ctx, getPostLikeForUpdate, arg.UserLogin, arg.PostID)
 	var i PostsLike
-	err := row.Scan(&i.UserLogin, &i.PostID, &i.Value)
+	err := row.Scan(
+		&i.UserLogin,
+		&i.PostID,
+		&i.Value,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
 	return i, err
 }
