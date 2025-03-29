@@ -1,4 +1,4 @@
--- CreatePost :one
+-- name: CreatePost :one
 INSERT INTO posts(
     id,
     title,
@@ -10,7 +10,7 @@ INSERT INTO posts(
 )
 RETURNING *;
 
--- GetPost :one
+-- name: GetPost :one
 SELECT * FROM posts
 WHERE id=$1 LIMIT 1;
 
@@ -18,12 +18,12 @@ WHERE id=$1 LIMIT 1;
 SELECT * FROM posts
 WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE;
 
--- GetPosts :many
+-- name: GetPostsListing :many
 SELECT * FROM posts
 ORDER BY created_at DESC
 LIMIT $1 OFFSET $2;
 
--- UpdatePost :one
+-- name: UpdatePost :one
 UPDATE posts
 SET 
     title = COALESCE(sqlc.narg('title'), title),
@@ -33,6 +33,6 @@ SET
 WHERE id = $1
 RETURNING *;
 
--- DeletePost :exec
+-- name: DeletePost :exec
 DELETE FROM posts
 WHERE id=$1;

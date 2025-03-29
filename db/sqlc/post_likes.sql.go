@@ -11,6 +11,69 @@ import (
 	"github.com/google/uuid"
 )
 
+const createPostLike = `-- name: CreatePostLike :one
+INSERT INTO posts_likes(
+    user_id,
+    post_id,
+    value
+) VALUES(
+    $1, $2, $3
+)
+RETURNING user_id, post_id, value, updated_at, created_at
+`
+
+type CreatePostLikeParams struct {
+	UserID uuid.UUID `json:"user_id"`
+	PostID uuid.UUID `json:"post_id"`
+	Value  LikeValue `json:"value"`
+}
+
+func (q *Queries) CreatePostLike(ctx context.Context, arg CreatePostLikeParams) (PostsLike, error) {
+	row := q.db.QueryRowContext(ctx, createPostLike, arg.UserID, arg.PostID, arg.Value)
+	var i PostsLike
+	err := row.Scan(
+		&i.UserID,
+		&i.PostID,
+		&i.Value,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const deletePostLike = `-- name: DeletePostLike :exec
+DELETE FROM posts
+WHERE id=$1
+`
+
+func (q *Queries) DeletePostLike(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deletePostLike, id)
+	return err
+}
+
+const getPostLike = `-- name: GetPostLike :one
+SELECT user_id, post_id, value, updated_at, created_at FROM posts_likes
+WHERE user_id=$1 AND post_id=$2 LIMIT 1
+`
+
+type GetPostLikeParams struct {
+	UserID uuid.UUID `json:"user_id"`
+	PostID uuid.UUID `json:"post_id"`
+}
+
+func (q *Queries) GetPostLike(ctx context.Context, arg GetPostLikeParams) (PostsLike, error) {
+	row := q.db.QueryRowContext(ctx, getPostLike, arg.UserID, arg.PostID)
+	var i PostsLike
+	err := row.Scan(
+		&i.UserID,
+		&i.PostID,
+		&i.Value,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getPostLikeForUpdate = `-- name: GetPostLikeForUpdate :one
 SELECT user_id, post_id, value, updated_at, created_at FROM posts_likes
 WHERE user_id=$1 AND post_id=$2 LIMIT 1 FOR NO KEY UPDATE
@@ -23,6 +86,33 @@ type GetPostLikeForUpdateParams struct {
 
 func (q *Queries) GetPostLikeForUpdate(ctx context.Context, arg GetPostLikeForUpdateParams) (PostsLike, error) {
 	row := q.db.QueryRowContext(ctx, getPostLikeForUpdate, arg.UserID, arg.PostID)
+	var i PostsLike
+	err := row.Scan(
+		&i.UserID,
+		&i.PostID,
+		&i.Value,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updatePostLike = `-- name: UpdatePostLike :one
+UPDATE posts_likes
+SET 
+    value=$1,
+    updated_at = NOW()
+WHERE user_id=$1 AND post_id=$2
+RETURNING user_id, post_id, value, updated_at, created_at
+`
+
+type UpdatePostLikeParams struct {
+	Value  LikeValue `json:"value"`
+	PostID uuid.UUID `json:"post_id"`
+}
+
+func (q *Queries) UpdatePostLike(ctx context.Context, arg UpdatePostLikeParams) (PostsLike, error) {
+	row := q.db.QueryRowContext(ctx, updatePostLike, arg.Value, arg.PostID)
 	var i PostsLike
 	err := row.Scan(
 		&i.UserID,

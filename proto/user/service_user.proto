@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package pb;
+
+import "user/rpc_create_user.proto";
+import "user/rpc_get_user.proto";
+import "user/rpc_update_user.proto";
+import "user/rpc_login_user.proto";
+
+option go_package = "github.com/paweldyl/blog-backend/pb";
+
+service UserService {
+    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse){}
+    rpc GetUser (GetUserRequest) returns (GetUserResponse){}
+    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse){}
+    rpc LoginUser (LoginUserRequest) returns (LoginUserResponse){}
+}

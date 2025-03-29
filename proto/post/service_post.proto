@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/empty.proto";
+
+import "post/rpc_create_post.proto";
+import "post/rpc_get_post.proto";
+import "post/rpc_get_posts_listing.proto";
+import "post/rpc_update_post.proto";
+import "post/rpc_delete_post.proto";
+
+option go_package = "github.com/paweldyl/blog-backend/pb";
+
+service PostService {
+    rpc CreatePost (CreatePostRequest) returns (CreatePostResponse){}
+    rpc GetPost (GetPostRequest) returns (GetPostResponse){}
+    rpc GetPostsListing (GetPostsListingRequest) returns (GetPostsListingResponse){}
+    rpc UpdatePost (UpdatePostRequest) returns (UpdatePostResponse){}
+    rpc DeletePost (DeletePostRequest) returns (google.protobuf.Empty){}
+}

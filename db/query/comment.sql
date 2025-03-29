@@ -1,4 +1,4 @@
--- CreateComment :one
+-- name: CreateComment :one
 INSERT INTO comments(
     id,
     text,
@@ -9,7 +9,7 @@ INSERT INTO comments(
 )
 RETURNING *;
 
--- GetComment :one
+-- name: GetComment :one
 SELECT * FROM comments
 WHERE id=$1 LIMIT 1;
 
@@ -17,12 +17,12 @@ WHERE id=$1 LIMIT 1;
 SELECT * FROM comments
 WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE;
 
--- GetComments :many
+-- name: GetComments :many
 SELECT * FROM comments
 ORDER BY created_at DESC
 LIMIT $1 OFFSET $2;
 
--- UpdateComment :one
+-- name: UpdateComment :one
 UPDATE comments
 SET 
     text=$1,
@@ -30,6 +30,6 @@ SET
 WHERE id = $2
 RETURNING *;
 
--- DeletePost :exec
+-- name: DeleteComment :exec
 DELETE FROM posts
 WHERE id=$1;

@@ -1,4 +1,4 @@
--- CreatePostLike :one
+-- name: CreatePostLike :one
 INSERT INTO posts_likes(
     user_id,
     post_id,
@@ -8,7 +8,7 @@ INSERT INTO posts_likes(
 )
 RETURNING *;
 
--- GetPostLike :one
+-- name: GetPostLike :one
 SELECT * FROM posts_likes
 WHERE user_id=$1 AND post_id=$2 LIMIT 1;
 
@@ -16,14 +16,14 @@ WHERE user_id=$1 AND post_id=$2 LIMIT 1;
 SELECT * FROM posts_likes
 WHERE user_id=$1 AND post_id=$2 LIMIT 1 FOR NO KEY UPDATE;
 
--- UpdatePostLike :one
+-- name: UpdatePostLike :one
 UPDATE posts_likes
 SET 
-    text=$1,
+    value=$1,
     updated_at = NOW()
 WHERE user_id=$1 AND post_id=$2
 RETURNING *;
 
--- DeletePost :exec
+-- name: DeletePostLike :exec
 DELETE FROM posts
 WHERE id=$1;

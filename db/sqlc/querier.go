@@ -11,15 +11,29 @@ import (
 )
 
 type Querier interface {
+	CreateComment(ctx context.Context, arg CreateCommentParams) (Comment, error)
+	CreatePost(ctx context.Context, arg CreatePostParams) (Post, error)
+	CreatePostLike(ctx context.Context, arg CreatePostLikeParams) (PostsLike, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteComment(ctx context.Context, id uuid.UUID) error
+	DeletePost(ctx context.Context, id uuid.UUID) error
+	DeletePostLike(ctx context.Context, id uuid.UUID) error
+	GetComment(ctx context.Context, id uuid.UUID) (Comment, error)
 	GetCommentForUpdate(ctx context.Context, id uuid.UUID) (Comment, error)
+	GetComments(ctx context.Context, arg GetCommentsParams) ([]Comment, error)
+	GetPost(ctx context.Context, id uuid.UUID) (Post, error)
 	GetPostForUpdate(ctx context.Context, id uuid.UUID) (Post, error)
+	GetPostLike(ctx context.Context, arg GetPostLikeParams) (PostsLike, error)
 	GetPostLikeForUpdate(ctx context.Context, arg GetPostLikeForUpdateParams) (PostsLike, error)
+	GetPostsListing(ctx context.Context, arg GetPostsListingParams) ([]Post, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
 	GetUser(ctx context.Context, id uuid.UUID) (User, error)
 	GetUserByLogin(ctx context.Context, login string) (User, error)
-	GetUserForUpdate(ctx context.Context, login string) (User, error)
+	GetUserForUpdate(ctx context.Context, id uuid.UUID) (User, error)
+	UpdateComment(ctx context.Context, arg UpdateCommentParams) (Comment, error)
+	UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error)
+	UpdatePostLike(ctx context.Context, arg UpdatePostLikeParams) (PostsLike, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
 

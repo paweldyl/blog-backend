@@ -11,6 +11,73 @@ import (
 	"github.com/google/uuid"
 )
 
+const createComment = `-- name: CreateComment :one
+INSERT INTO comments(
+    id,
+    text,
+    user_id,
+    post_id
+) VALUES(
+    $1, $2, $3, $4
+)
+RETURNING id, text, user_id, post_id, updated_at, created_at
+`
+
+type CreateCommentParams struct {
+	ID     uuid.UUID `json:"id"`
+	Text   string    `json:"text"`
+	UserID uuid.UUID `json:"user_id"`
+	PostID uuid.UUID `json:"post_id"`
+}
+
+func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (Comment, error) {
+	row := q.db.QueryRowContext(ctx, createComment,
+		arg.ID,
+		arg.Text,
+		arg.UserID,
+		arg.PostID,
+	)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.Text,
+		&i.UserID,
+		&i.PostID,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const deleteComment = `-- name: DeleteComment :exec
+DELETE FROM posts
+WHERE id=$1
+`
+
+func (q *Queries) DeleteComment(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteComment, id)
+	return err
+}
+
+const getComment = `-- name: GetComment :one
+SELECT id, text, user_id, post_id, updated_at, created_at FROM comments
+WHERE id=$1 LIMIT 1
+`
+
+func (q *Queries) GetComment(ctx context.Context, id uuid.UUID) (Comment, error) {
+	row := q.db.QueryRowContext(ctx, getComment, id)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.Text,
+		&i.UserID,
+		&i.PostID,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getCommentForUpdate = `-- name: GetCommentForUpdate :one
 SELECT id, text, user_id, post_id, updated_at, created_at FROM comments
 WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE
@@ -18,6 +85,75 @@ WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE
 
 func (q *Queries) GetCommentForUpdate(ctx context.Context, id uuid.UUID) (Comment, error) {
 	row := q.db.QueryRowContext(ctx, getCommentForUpdate, id)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.Text,
+		&i.UserID,
+		&i.PostID,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getComments = `-- name: GetComments :many
+SELECT id, text, user_id, post_id, updated_at, created_at FROM comments
+ORDER BY created_at DESC
+LIMIT $1 OFFSET $2
+`
+
+type GetCommentsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetComments(ctx context.Context, arg GetCommentsParams) ([]Comment, error) {
+	rows, err := q.db.QueryContext(ctx, getComments, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Comment{}
+	for rows.Next() {
+		var i Comment
+		if err := rows.Scan(
+			&i.ID,
+			&i.Text,
+			&i.UserID,
+			&i.PostID,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateComment = `-- name: UpdateComment :one
+UPDATE comments
+SET 
+    text=$1,
+    updated_at = NOW()
+WHERE id = $2
+RETURNING id, text, user_id, post_id, updated_at, created_at
+`
+
+type UpdateCommentParams struct {
+	Text string    `json:"text"`
+	ID   uuid.UUID `json:"id"`
+}
+
+func (q *Queries) UpdateComment(ctx context.Context, arg UpdateCommentParams) (Comment, error) {
+	row := q.db.QueryRowContext(ctx, updateComment, arg.Text, arg.ID)
 	var i Comment
 	err := row.Scan(
 		&i.ID,

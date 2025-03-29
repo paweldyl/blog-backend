@@ -3,7 +3,11 @@ package util
 import (
 	"math/rand"
 	"strings"
+	"testing"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/require"
 )
 
 func init() {
@@ -29,4 +33,10 @@ func RandomString(n int) string {
 
 func RandomOwner() string {
 	return RandomString(6)
+}
+
+func RandomID(t *testing.T) uuid.UUID {
+	id, err := uuid.NewRandom()
+	require.NoError(t, err)
+	return id
 }

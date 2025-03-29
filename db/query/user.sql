@@ -19,7 +19,7 @@ WHERE login = $1 LIMIT 1;
 
 -- name: GetUserForUpdate :one
 SELECT * FROM users
-WHERE login = $1 LIMIT 1 FOR NO KEY UPDATE;
+WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE;
 
 -- name: UpdateUser :one
 UPDATE users
@@ -27,5 +27,5 @@ SET
   username = COALESCE(sqlc.narg('username'), username),
   -- profile_image = COALESCE(sqlc.narg('profile_image'), profile_image),
   updated_at = NOW()
-WHERE login = $1
+WHERE id = $1
 RETURNING *;

@@ -90,11 +90,11 @@ func (q *Queries) GetUserByLogin(ctx context.Context, login string) (User, error
 
 const getUserForUpdate = `-- name: GetUserForUpdate :one
 SELECT id, login, hashed_password, username, updated_at, created_at FROM users
-WHERE login = $1 LIMIT 1 FOR NO KEY UPDATE
+WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE
 `
 
-func (q *Queries) GetUserForUpdate(ctx context.Context, login string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserForUpdate, login)
+func (q *Queries) GetUserForUpdate(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserForUpdate, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -113,17 +113,17 @@ SET
   username = COALESCE($2, username),
   -- profile_image = COALESCE(sqlc.narg('profile_image'), profile_image),
   updated_at = NOW()
-WHERE login = $1
+WHERE id = $1
 RETURNING id, login, hashed_password, username, updated_at, created_at
 `
 
 type UpdateUserParams struct {
-	Login    string         `json:"login"`
+	ID       uuid.UUID      `json:"id"`
 	Username sql.NullString `json:"username"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUser, arg.Login, arg.Username)
+	row := q.db.QueryRowContext(ctx, updateUser, arg.ID, arg.Username)
 	var i User
 	err := row.Scan(
 		&i.ID,
