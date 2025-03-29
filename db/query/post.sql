@@ -4,7 +4,7 @@ INSERT INTO posts(
     title,
     short_desc,
     description,
-    author_login
+    user_id
 ) VALUES(
     $1, $2, $3, $4, $5
 )

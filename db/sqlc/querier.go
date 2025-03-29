@@ -17,7 +17,8 @@ type Querier interface {
 	GetPostForUpdate(ctx context.Context, id uuid.UUID) (Post, error)
 	GetPostLikeForUpdate(ctx context.Context, arg GetPostLikeForUpdateParams) (PostsLike, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
-	GetUser(ctx context.Context, login string) (User, error)
+	GetUser(ctx context.Context, id uuid.UUID) (User, error)
+	GetUserByLogin(ctx context.Context, login string) (User, error)
 	GetUserForUpdate(ctx context.Context, login string) (User, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }

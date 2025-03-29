@@ -1,9 +1,11 @@
-package gapi
+package api
 
 import (
 	"context"
+	"fmt"
 	"log"
 
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 	db "github.com/paweldyl/blog-backend/db/sqlc"
 	"github.com/paweldyl/blog-backend/pb"
@@ -18,7 +20,12 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 		return nil, status.Errorf(codes.Internal, "failed to hash password: %s", err)
 	}
 
+	userId, err := uuid.NewRandom()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to generate uuid: %s", err)
+	}
 	arg := db.CreateUserParams{
+		ID:             userId,
 		Login:          req.GetLogin(),
 		Username:       req.GetUsername(),
 		HashedPassword: hashedPassword,
@@ -36,8 +43,11 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 		return nil, status.Errorf(codes.Internal, "faile to create user: %s", err)
 	}
 
+	fmt.Println(user.ID.String())
+	fmt.Println(user.Username)
 	rsp := &pb.CreateUserResponse{
-		User: converUser(user),
+		User: convertUser(user),
 	}
+	fmt.Println(rsp)
 	return rsp, nil
 }

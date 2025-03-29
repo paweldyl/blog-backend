@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/paweldyl/blog-backend/util"
 	"github.com/stretchr/testify/require"
 )
@@ -12,8 +13,11 @@ import (
 func createRandomUser(t *testing.T) User {
 	hashedPassword, err := util.HashPassword(util.RandomString(6))
 	require.NoError(t, err)
+	userId, err := uuid.NewRandom()
+	require.NoError(t, err)
 
 	arg := CreateUserParams{
+		ID:             userId,
 		Login:          util.RandomOwner(),
 		HashedPassword: hashedPassword,
 		Username:       util.RandomOwner(),
@@ -39,7 +43,7 @@ func TestCreateUser(t *testing.T) {
 
 func TestGetUser(t *testing.T) {
 	user1 := createRandomUser(t)
-	user2, err := testQueries.GetUser(context.Background(), user1.Login)
+	user2, err := testQueries.GetUser(context.Background(), user1.ID)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, user1)

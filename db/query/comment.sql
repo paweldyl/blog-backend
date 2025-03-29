@@ -2,7 +2,7 @@
 INSERT INTO comments(
     id,
     text,
-    author_login,
+    user_id,
     post_id
 ) VALUES(
     $1, $2, $3, $4

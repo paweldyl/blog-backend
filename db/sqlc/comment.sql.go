@@ -12,7 +12,7 @@ import (
 )
 
 const getCommentForUpdate = `-- name: GetCommentForUpdate :one
-SELECT id, text, author_login, post_id, updated_at, created_at FROM comments
+SELECT id, text, user_id, post_id, updated_at, created_at FROM comments
 WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE
 `
 
@@ -22,7 +22,7 @@ func (q *Queries) GetCommentForUpdate(ctx context.Context, id uuid.UUID) (Commen
 	err := row.Scan(
 		&i.ID,
 		&i.Text,
-		&i.AuthorLogin,
+		&i.UserID,
 		&i.PostID,
 		&i.UpdatedAt,
 		&i.CreatedAt,

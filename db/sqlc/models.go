@@ -55,12 +55,12 @@ func (ns NullLikeValue) Value() (driver.Value, error) {
 }
 
 type Comment struct {
-	ID          uuid.UUID `json:"id"`
-	Text        string    `json:"text"`
-	AuthorLogin string    `json:"author_login"`
-	PostID      uuid.UUID `json:"post_id"`
-	UpdatedAt   time.Time `json:"updated_at"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID        uuid.UUID `json:"id"`
+	Text      string    `json:"text"`
+	UserID    uuid.UUID `json:"user_id"`
+	PostID    uuid.UUID `json:"post_id"`
+	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Post struct {
@@ -68,7 +68,7 @@ type Post struct {
 	Title          string    `json:"title"`
 	ShortDesc      string    `json:"short_desc"`
 	Description    string    `json:"description"`
-	AuthorLogin    string    `json:"author_login"`
+	UserID         uuid.UUID `json:"user_id"`
 	LikesAmount    int32     `json:"likes_amount"`
 	DislikesAmount int32     `json:"dislikes_amount"`
 	UpdatedAt      time.Time `json:"updated_at"`
@@ -76,7 +76,7 @@ type Post struct {
 }
 
 type PostsLike struct {
-	UserLogin string    `json:"user_login"`
+	UserID    uuid.UUID `json:"user_id"`
 	PostID    uuid.UUID `json:"post_id"`
 	Value     LikeValue `json:"value"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -85,7 +85,7 @@ type PostsLike struct {
 
 type Session struct {
 	ID           uuid.UUID `json:"id"`
-	Login        string    `json:"login"`
+	UserID       uuid.UUID `json:"user_id"`
 	RefreshToken string    `json:"refresh_token"`
 	IsBlocked    bool      `json:"is_blocked"`
 	ExpiresAt    time.Time `json:"expires_at"`
@@ -93,6 +93,7 @@ type Session struct {
 }
 
 type User struct {
+	ID             uuid.UUID `json:"id"`
 	Login          string    `json:"login"`
 	HashedPassword string    `json:"hashed_password"`
 	Username       string    `json:"username"`

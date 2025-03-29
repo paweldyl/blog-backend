@@ -7,7 +7,7 @@ import (
 
 	_ "github.com/golang/mock/gomock"
 	_ "github.com/lib/pq"
-	gapi "github.com/paweldyl/blog-backend/api"
+	api "github.com/paweldyl/blog-backend/api"
 	db "github.com/paweldyl/blog-backend/db/sqlc"
 	"github.com/paweldyl/blog-backend/pb"
 	"github.com/paweldyl/blog-backend/util"
@@ -31,7 +31,7 @@ func main() {
 }
 
 func runGrpcServer(config util.Config, store db.Store) {
-	server, err := gapi.NewServer(config, store)
+	server, err := api.NewServer(config, store)
 	if err != nil {
 		log.Fatal("cannot create server:", err)
 	}

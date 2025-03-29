@@ -8,29 +8,39 @@ package db
 import (
 	"context"
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
+  id,
   login,
   hashed_password,
   username
 ) VALUES (
-  $1, $2, $3
+  $1, $2, $3, $4
 )
-RETURNING login, hashed_password, username, updated_at, created_at
+RETURNING id, login, hashed_password, username, updated_at, created_at
 `
 
 type CreateUserParams struct {
-	Login          string `json:"login"`
-	HashedPassword string `json:"hashed_password"`
-	Username       string `json:"username"`
+	ID             uuid.UUID `json:"id"`
+	Login          string    `json:"login"`
+	HashedPassword string    `json:"hashed_password"`
+	Username       string    `json:"username"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.Login, arg.HashedPassword, arg.Username)
+	row := q.db.QueryRowContext(ctx, createUser,
+		arg.ID,
+		arg.Login,
+		arg.HashedPassword,
+		arg.Username,
+	)
 	var i User
 	err := row.Scan(
+		&i.ID,
 		&i.Login,
 		&i.HashedPassword,
 		&i.Username,
@@ -41,14 +51,34 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUser = `-- name: GetUser :one
-SELECT login, hashed_password, username, updated_at, created_at FROM users
+SELECT id, login, hashed_password, username, updated_at, created_at FROM users
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUser, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Login,
+		&i.HashedPassword,
+		&i.Username,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getUserByLogin = `-- name: GetUserByLogin :one
+SELECT id, login, hashed_password, username, updated_at, created_at FROM users
 WHERE login = $1 LIMIT 1
 `
 
-func (q *Queries) GetUser(ctx context.Context, login string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUser, login)
+func (q *Queries) GetUserByLogin(ctx context.Context, login string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByLogin, login)
 	var i User
 	err := row.Scan(
+		&i.ID,
 		&i.Login,
 		&i.HashedPassword,
 		&i.Username,
@@ -59,7 +89,7 @@ func (q *Queries) GetUser(ctx context.Context, login string) (User, error) {
 }
 
 const getUserForUpdate = `-- name: GetUserForUpdate :one
-SELECT login, hashed_password, username, updated_at, created_at FROM users
+SELECT id, login, hashed_password, username, updated_at, created_at FROM users
 WHERE login = $1 LIMIT 1 FOR NO KEY UPDATE
 `
 
@@ -67,6 +97,7 @@ func (q *Queries) GetUserForUpdate(ctx context.Context, login string) (User, err
 	row := q.db.QueryRowContext(ctx, getUserForUpdate, login)
 	var i User
 	err := row.Scan(
+		&i.ID,
 		&i.Login,
 		&i.HashedPassword,
 		&i.Username,
@@ -83,7 +114,7 @@ SET
   -- profile_image = COALESCE(sqlc.narg('profile_image'), profile_image),
   updated_at = NOW()
 WHERE login = $1
-RETURNING login, hashed_password, username, updated_at, created_at
+RETURNING id, login, hashed_password, username, updated_at, created_at
 `
 
 type UpdateUserParams struct {
@@ -95,6 +126,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 	row := q.db.QueryRowContext(ctx, updateUser, arg.Login, arg.Username)
 	var i User
 	err := row.Scan(
+		&i.ID,
 		&i.Login,
 		&i.HashedPassword,
 		&i.Username,

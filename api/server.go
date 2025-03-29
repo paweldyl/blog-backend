@@ -1,4 +1,4 @@
-package gapi
+package api
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ type Server struct {
 
 // NewServer creates a new gRPC server.
 func NewServer(config util.Config, store db.Store) (*Server, error) {
-	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
+	tokenMaker, err := token.NewJWTMaker(config.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
 	}
