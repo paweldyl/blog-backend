@@ -17,10 +17,15 @@ WHERE id=$1 LIMIT 1;
 SELECT * FROM comments
 WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE;
 
--- name: GetComments :many
-SELECT * FROM comments
-ORDER BY created_at DESC
-LIMIT $1 OFFSET $2;
+-- name: GetPostCommentsWithUsers :many
+SELECT
+  c.*,
+  u.username
+FROM comments c
+JOIN users u ON c.user_id = u.id
+WHERE c.post_id = $1
+ORDER BY c.created_at DESC
+LIMIT $2 OFFSET $3;
 
 -- name: UpdateComment :one
 UPDATE comments
@@ -31,5 +36,5 @@ WHERE id = $2
 RETURNING *;
 
 -- name: DeleteComment :exec
-DELETE FROM posts
+DELETE FROM comments
 WHERE id=$1;

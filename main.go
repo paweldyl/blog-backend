@@ -8,8 +8,10 @@ import (
 	_ "github.com/golang/mock/gomock"
 	_ "github.com/lib/pq"
 	db "github.com/paweldyl/blog-backend/db/sqlc"
+	"github.com/paweldyl/blog-backend/grpcapi/comment"
 	"github.com/paweldyl/blog-backend/grpcapi/post"
 	"github.com/paweldyl/blog-backend/grpcapi/user"
+	commentpb "github.com/paweldyl/blog-backend/pb/comment"
 	postpb "github.com/paweldyl/blog-backend/pb/post"
 	userpb "github.com/paweldyl/blog-backend/pb/user"
 	"github.com/paweldyl/blog-backend/util"
@@ -41,10 +43,15 @@ func runGrpcServer(config util.Config, store db.Store) {
 	if err != nil {
 		log.Fatal("cannot create server:", err)
 	}
+	commentServer, err := comment.NewServer(config, store)
+	if err != nil {
+		log.Fatal("cannot create server:", err)
+	}
 
 	grpcServer := grpc.NewServer()
 	userpb.RegisterUserServiceServer(grpcServer, userServer)
 	postpb.RegisterPostServiceServer(grpcServer, postServer)
+	commentpb.RegisterCommentServiceServer(grpcServer, commentServer)
 	reflection.Register(grpcServer)
 
 	listener, err := net.Listen("tcp", config.ServerAddress)

@@ -23,9 +23,10 @@ const (
 
 type UpdatePostRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Title         *string                `protobuf:"bytes,1,opt,name=title,proto3,oneof" json:"title,omitempty"`
-	ShortDesc     *string                `protobuf:"bytes,2,opt,name=short_desc,json=shortDesc,proto3,oneof" json:"short_desc,omitempty"`
-	Description   *string                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	PostId        string                 `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"`
+	Title         *string                `protobuf:"bytes,2,opt,name=title,proto3,oneof" json:"title,omitempty"`
+	ShortDesc     *string                `protobuf:"bytes,3,opt,name=short_desc,json=shortDesc,proto3,oneof" json:"short_desc,omitempty"`
+	Description   *string                `protobuf:"bytes,4,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -58,6 +59,13 @@ func (x *UpdatePostRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use UpdatePostRequest.ProtoReflect.Descriptor instead.
 func (*UpdatePostRequest) Descriptor() ([]byte, []int) {
 	return file_post_rpc_update_post_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *UpdatePostRequest) GetPostId() string {
+	if x != nil {
+		return x.PostId
+	}
+	return ""
 }
 
 func (x *UpdatePostRequest) GetTitle() string {
@@ -129,12 +137,13 @@ var File_post_rpc_update_post_proto protoreflect.FileDescriptor
 
 const file_post_rpc_update_post_proto_rawDesc = "" +
 	"\n" +
-	"\x1apost/rpc_update_post.proto\x12\x02pb\x1a\x0fpost/post.proto\"\xa2\x01\n" +
-	"\x11UpdatePostRequest\x12\x19\n" +
-	"\x05title\x18\x01 \x01(\tH\x00R\x05title\x88\x01\x01\x12\"\n" +
+	"\x1apost/rpc_update_post.proto\x12\x02pb\x1a\x0fpost/post.proto\"\xbb\x01\n" +
+	"\x11UpdatePostRequest\x12\x17\n" +
+	"\apost_id\x18\x01 \x01(\tR\x06postId\x12\x19\n" +
+	"\x05title\x18\x02 \x01(\tH\x00R\x05title\x88\x01\x01\x12\"\n" +
 	"\n" +
-	"short_desc\x18\x02 \x01(\tH\x01R\tshortDesc\x88\x01\x01\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x02R\vdescription\x88\x01\x01B\b\n" +
+	"short_desc\x18\x03 \x01(\tH\x01R\tshortDesc\x88\x01\x01\x12%\n" +
+	"\vdescription\x18\x04 \x01(\tH\x02R\vdescription\x88\x01\x01B\b\n" +
 	"\x06_titleB\r\n" +
 	"\v_short_descB\x0e\n" +
 	"\f_description\"2\n" +

@@ -25,5 +25,5 @@ WHERE user_id=$1 AND post_id=$2
 RETURNING *;
 
 -- name: DeletePostLike :exec
-DELETE FROM posts
-WHERE id=$1;
+DELETE FROM posts_likes
+WHERE user_id=$1 AND post_id=$2;

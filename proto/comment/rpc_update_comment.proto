@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+
+import "comment/comment.proto";
+
+option go_package = "github.com/paweldyl/blog-backend/pb";
+
+message UpdateCommentRequest {
+    string comment_id = 1;
+    string text = 2;
+}
+
+message UpdateCommentResponse {
+    Comment comment = 1;
+}
+
+

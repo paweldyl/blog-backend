@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/empty.proto";
+
+import "comment/rpc_create_comment.proto";
+import "comment/rpc_get_post_comments.proto";
+import "comment/rpc_update_comment.proto";
+import "comment/rpc_delete_comment.proto";
+
+option go_package = "github.com/paweldyl/blog-backend/pb";
+
+service CommentService {
+    rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse) {}
+    rpc GetPostComments (GetPostCommentsRequest) returns (GetPostCommentsResponse) {}
+    rpc UpdateComment (UpdateCommentRequest) returns (UpdateCommentResponse) {}
+    rpc DeleteComment (DeleteCommentRequest) returns (google.protobuf.Empty) {}
+  }

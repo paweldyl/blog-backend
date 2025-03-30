@@ -18,11 +18,11 @@ type Querier interface {
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteComment(ctx context.Context, id uuid.UUID) error
 	DeletePost(ctx context.Context, id uuid.UUID) error
-	DeletePostLike(ctx context.Context, id uuid.UUID) error
+	DeletePostLike(ctx context.Context, arg DeletePostLikeParams) error
 	GetComment(ctx context.Context, id uuid.UUID) (Comment, error)
 	GetCommentForUpdate(ctx context.Context, id uuid.UUID) (Comment, error)
-	GetComments(ctx context.Context, arg GetCommentsParams) ([]Comment, error)
 	GetPost(ctx context.Context, id uuid.UUID) (Post, error)
+	GetPostCommentsWithUsers(ctx context.Context, arg GetPostCommentsWithUsersParams) ([]GetPostCommentsWithUsersRow, error)
 	GetPostForUpdate(ctx context.Context, id uuid.UUID) (Post, error)
 	GetPostLike(ctx context.Context, arg GetPostLikeParams) (PostsLike, error)
 	GetPostLikeForUpdate(ctx context.Context, arg GetPostLikeForUpdateParams) (PostsLike, error)

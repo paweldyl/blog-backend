@@ -42,12 +42,17 @@ func (q *Queries) CreatePostLike(ctx context.Context, arg CreatePostLikeParams) 
 }
 
 const deletePostLike = `-- name: DeletePostLike :exec
-DELETE FROM posts
-WHERE id=$1
+DELETE FROM posts_likes
+WHERE user_id=$1 AND post_id=$2
 `
 
-func (q *Queries) DeletePostLike(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deletePostLike, id)
+type DeletePostLikeParams struct {
+	UserID uuid.UUID `json:"user_id"`
+	PostID uuid.UUID `json:"post_id"`
+}
+
+func (q *Queries) DeletePostLike(ctx context.Context, arg DeletePostLikeParams) error {
+	_, err := q.db.ExecContext(ctx, deletePostLike, arg.UserID, arg.PostID)
 	return err
 }
 

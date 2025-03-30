@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -50,7 +51,7 @@ func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (C
 }
 
 const deleteComment = `-- name: DeleteComment :exec
-DELETE FROM posts
+DELETE FROM comments
 WHERE id=$1
 `
 
@@ -97,26 +98,42 @@ func (q *Queries) GetCommentForUpdate(ctx context.Context, id uuid.UUID) (Commen
 	return i, err
 }
 
-const getComments = `-- name: GetComments :many
-SELECT id, text, user_id, post_id, updated_at, created_at FROM comments
-ORDER BY created_at DESC
-LIMIT $1 OFFSET $2
+const getPostCommentsWithUsers = `-- name: GetPostCommentsWithUsers :many
+SELECT
+  c.id, c.text, c.user_id, c.post_id, c.updated_at, c.created_at,
+  u.username
+FROM comments c
+JOIN users u ON c.user_id = u.id
+WHERE c.post_id = $1
+ORDER BY c.created_at DESC
+LIMIT $2 OFFSET $3
 `
 
-type GetCommentsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+type GetPostCommentsWithUsersParams struct {
+	PostID uuid.UUID `json:"post_id"`
+	Limit  int32     `json:"limit"`
+	Offset int32     `json:"offset"`
 }
 
-func (q *Queries) GetComments(ctx context.Context, arg GetCommentsParams) ([]Comment, error) {
-	rows, err := q.db.QueryContext(ctx, getComments, arg.Limit, arg.Offset)
+type GetPostCommentsWithUsersRow struct {
+	ID        uuid.UUID `json:"id"`
+	Text      string    `json:"text"`
+	UserID    uuid.UUID `json:"user_id"`
+	PostID    uuid.UUID `json:"post_id"`
+	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"created_at"`
+	Username  string    `json:"username"`
+}
+
+func (q *Queries) GetPostCommentsWithUsers(ctx context.Context, arg GetPostCommentsWithUsersParams) ([]GetPostCommentsWithUsersRow, error) {
+	rows, err := q.db.QueryContext(ctx, getPostCommentsWithUsers, arg.PostID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Comment{}
+	items := []GetPostCommentsWithUsersRow{}
 	for rows.Next() {
-		var i Comment
+		var i GetPostCommentsWithUsersRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Text,
@@ -124,6 +141,7 @@ func (q *Queries) GetComments(ctx context.Context, arg GetCommentsParams) ([]Com
 			&i.PostID,
 			&i.UpdatedAt,
 			&i.CreatedAt,
+			&i.Username,
 		); err != nil {
 			return nil, err
 		}
