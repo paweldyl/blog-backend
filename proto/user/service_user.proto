@@ -6,6 +6,7 @@ import "user/rpc_create_user.proto";
 import "user/rpc_get_user.proto";
 import "user/rpc_update_user.proto";
 import "user/rpc_login_user.proto";
+import "user/rpc_refresh_token.proto";
 
 option go_package = "github.com/paweldyl/blog-backend/pb";
 
@@ -14,4 +15,5 @@ service UserService {
     rpc GetUser (GetUserRequest) returns (GetUserResponse){}
     rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse){}
     rpc LoginUser (LoginUserRequest) returns (LoginUserResponse){}
+    rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse){}
 }

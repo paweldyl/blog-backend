@@ -24,36 +24,41 @@ var File_user_service_user_proto protoreflect.FileDescriptor
 
 const file_user_service_user_proto_rawDesc = "" +
 	"\n" +
-	"\x17user/service_user.proto\x12\x02pb\x1a\x1auser/rpc_create_user.proto\x1a\x17user/rpc_get_user.proto\x1a\x1auser/rpc_update_user.proto\x1a\x19user/rpc_login_user.proto2\xfd\x01\n" +
+	"\x17user/service_user.proto\x12\x02pb\x1a\x1auser/rpc_create_user.proto\x1a\x17user/rpc_get_user.proto\x1a\x1auser/rpc_update_user.proto\x1a\x19user/rpc_login_user.proto\x1a\x1cuser/rpc_refresh_token.proto2\xc2\x02\n" +
 	"\vUserService\x12=\n" +
 	"\n" +
 	"CreateUser\x12\x15.pb.CreateUserRequest\x1a\x16.pb.CreateUserResponse\"\x00\x124\n" +
 	"\aGetUser\x12\x12.pb.GetUserRequest\x1a\x13.pb.GetUserResponse\"\x00\x12=\n" +
 	"\n" +
 	"UpdateUser\x12\x15.pb.UpdateUserRequest\x1a\x16.pb.UpdateUserResponse\"\x00\x12:\n" +
-	"\tLoginUser\x12\x14.pb.LoginUserRequest\x1a\x15.pb.LoginUserResponse\"\x00B%Z#github.com/paweldyl/blog-backend/pbb\x06proto3"
+	"\tLoginUser\x12\x14.pb.LoginUserRequest\x1a\x15.pb.LoginUserResponse\"\x00\x12C\n" +
+	"\fRefreshToken\x12\x17.pb.RefreshTokenRequest\x1a\x18.pb.RefreshTokenResponse\"\x00B%Z#github.com/paweldyl/blog-backend/pbb\x06proto3"
 
 var file_user_service_user_proto_goTypes = []any{
-	(*CreateUserRequest)(nil),  // 0: pb.CreateUserRequest
-	(*GetUserRequest)(nil),     // 1: pb.GetUserRequest
-	(*UpdateUserRequest)(nil),  // 2: pb.UpdateUserRequest
-	(*LoginUserRequest)(nil),   // 3: pb.LoginUserRequest
-	(*CreateUserResponse)(nil), // 4: pb.CreateUserResponse
-	(*GetUserResponse)(nil),    // 5: pb.GetUserResponse
-	(*UpdateUserResponse)(nil), // 6: pb.UpdateUserResponse
-	(*LoginUserResponse)(nil),  // 7: pb.LoginUserResponse
+	(*CreateUserRequest)(nil),    // 0: pb.CreateUserRequest
+	(*GetUserRequest)(nil),       // 1: pb.GetUserRequest
+	(*UpdateUserRequest)(nil),    // 2: pb.UpdateUserRequest
+	(*LoginUserRequest)(nil),     // 3: pb.LoginUserRequest
+	(*RefreshTokenRequest)(nil),  // 4: pb.RefreshTokenRequest
+	(*CreateUserResponse)(nil),   // 5: pb.CreateUserResponse
+	(*GetUserResponse)(nil),      // 6: pb.GetUserResponse
+	(*UpdateUserResponse)(nil),   // 7: pb.UpdateUserResponse
+	(*LoginUserResponse)(nil),    // 8: pb.LoginUserResponse
+	(*RefreshTokenResponse)(nil), // 9: pb.RefreshTokenResponse
 }
 var file_user_service_user_proto_depIdxs = []int32{
 	0, // 0: pb.UserService.CreateUser:input_type -> pb.CreateUserRequest
 	1, // 1: pb.UserService.GetUser:input_type -> pb.GetUserRequest
 	2, // 2: pb.UserService.UpdateUser:input_type -> pb.UpdateUserRequest
 	3, // 3: pb.UserService.LoginUser:input_type -> pb.LoginUserRequest
-	4, // 4: pb.UserService.CreateUser:output_type -> pb.CreateUserResponse
-	5, // 5: pb.UserService.GetUser:output_type -> pb.GetUserResponse
-	6, // 6: pb.UserService.UpdateUser:output_type -> pb.UpdateUserResponse
-	7, // 7: pb.UserService.LoginUser:output_type -> pb.LoginUserResponse
-	4, // [4:8] is the sub-list for method output_type
-	0, // [0:4] is the sub-list for method input_type
+	4, // 4: pb.UserService.RefreshToken:input_type -> pb.RefreshTokenRequest
+	5, // 5: pb.UserService.CreateUser:output_type -> pb.CreateUserResponse
+	6, // 6: pb.UserService.GetUser:output_type -> pb.GetUserResponse
+	7, // 7: pb.UserService.UpdateUser:output_type -> pb.UpdateUserResponse
+	8, // 8: pb.UserService.LoginUser:output_type -> pb.LoginUserResponse
+	9, // 9: pb.UserService.RefreshToken:output_type -> pb.RefreshTokenResponse
+	5, // [5:10] is the sub-list for method output_type
+	0, // [0:5] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -68,6 +73,7 @@ func file_user_service_user_proto_init() {
 	file_user_rpc_get_user_proto_init()
 	file_user_rpc_update_user_proto_init()
 	file_user_rpc_login_user_proto_init()
+	file_user_rpc_refresh_token_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
