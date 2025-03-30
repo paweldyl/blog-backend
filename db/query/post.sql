@@ -33,6 +33,14 @@ SET
 WHERE id = $1
 RETURNING *;
 
+-- name: UpdateLikesAndDislikes :one
+UPDATE posts
+SET 
+  likes_amount = likes_amount + sqlc.arg(likes_amount),
+  dislikes_amount = dislikes_amount + sqlc.arg(dislikes_amount)
+WHERE id = sqlc.arg(id)
+RETURNING *;
+
 -- name: DeletePost :exec
 DELETE FROM posts
 WHERE id=$1;

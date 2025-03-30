@@ -10,9 +10,11 @@ import (
 	db "github.com/paweldyl/blog-backend/db/sqlc"
 	"github.com/paweldyl/blog-backend/grpcapi/comment"
 	"github.com/paweldyl/blog-backend/grpcapi/post"
+	"github.com/paweldyl/blog-backend/grpcapi/post_like"
 	"github.com/paweldyl/blog-backend/grpcapi/user"
 	commentpb "github.com/paweldyl/blog-backend/pb/comment"
 	postpb "github.com/paweldyl/blog-backend/pb/post"
+	postlikepb "github.com/paweldyl/blog-backend/pb/post_like"
 	userpb "github.com/paweldyl/blog-backend/pb/user"
 	"github.com/paweldyl/blog-backend/util"
 	"google.golang.org/grpc"
@@ -47,11 +49,16 @@ func runGrpcServer(config util.Config, store db.Store) {
 	if err != nil {
 		log.Fatal("cannot create server:", err)
 	}
+	postLikeServer, err := post_like.NewServer(config, store)
+	if err != nil {
+		log.Fatal("cannot create server:", err)
+	}
 
 	grpcServer := grpc.NewServer()
 	userpb.RegisterUserServiceServer(grpcServer, userServer)
 	postpb.RegisterPostServiceServer(grpcServer, postServer)
 	commentpb.RegisterCommentServiceServer(grpcServer, commentServer)
+	postlikepb.RegisterPostLikeServiceServer(grpcServer, postLikeServer)
 	reflection.Register(grpcServer)
 
 	listener, err := net.Listen("tcp", config.ServerAddress)

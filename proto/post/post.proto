@@ -10,4 +10,6 @@ message Post {
     string short_desc = 3;
     string description = 4;
     string user_id = 5;
+    int32 likes = 6;
+    int32 dislikes = 7;
 }

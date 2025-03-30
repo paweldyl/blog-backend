@@ -154,6 +154,38 @@ func (q *Queries) GetPostsListing(ctx context.Context, arg GetPostsListingParams
 	return items, nil
 }
 
+const updateLikesAndDislikes = `-- name: UpdateLikesAndDislikes :one
+UPDATE posts
+SET 
+  likes_amount = likes_amount + $1,
+  dislikes_amount = dislikes_amount + $2
+WHERE id = $3
+RETURNING id, title, short_desc, description, user_id, likes_amount, dislikes_amount, updated_at, created_at
+`
+
+type UpdateLikesAndDislikesParams struct {
+	LikesAmount    int32     `json:"likes_amount"`
+	DislikesAmount int32     `json:"dislikes_amount"`
+	ID             uuid.UUID `json:"id"`
+}
+
+func (q *Queries) UpdateLikesAndDislikes(ctx context.Context, arg UpdateLikesAndDislikesParams) (Post, error) {
+	row := q.db.QueryRowContext(ctx, updateLikesAndDislikes, arg.LikesAmount, arg.DislikesAmount, arg.ID)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.ShortDesc,
+		&i.Description,
+		&i.UserID,
+		&i.LikesAmount,
+		&i.DislikesAmount,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const updatePost = `-- name: UpdatePost :one
 UPDATE posts
 SET 

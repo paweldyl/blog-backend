@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/paweldyl/blog-backend/pb";
+
+enum LikeValue {
+    LIKE_VALUE_UNSPECIFIED = 0;
+    LIKE = 1;
+    DISLIKE = 2;
+}
+
+message PostLike {
+    string user_id = 1;
+    string post_id = 2;
+    LikeValue value = 3;
+}

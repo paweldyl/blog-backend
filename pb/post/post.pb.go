@@ -28,6 +28,8 @@ type Post struct {
 	ShortDesc     string                 `protobuf:"bytes,3,opt,name=short_desc,json=shortDesc,proto3" json:"short_desc,omitempty"`
 	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	UserId        string                 `protobuf:"bytes,5,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Likes         int32                  `protobuf:"varint,6,opt,name=likes,proto3" json:"likes,omitempty"`
+	Dislikes      int32                  `protobuf:"varint,7,opt,name=dislikes,proto3" json:"dislikes,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -97,18 +99,34 @@ func (x *Post) GetUserId() string {
 	return ""
 }
 
+func (x *Post) GetLikes() int32 {
+	if x != nil {
+		return x.Likes
+	}
+	return 0
+}
+
+func (x *Post) GetDislikes() int32 {
+	if x != nil {
+		return x.Dislikes
+	}
+	return 0
+}
+
 var File_post_post_proto protoreflect.FileDescriptor
 
 const file_post_post_proto_rawDesc = "" +
 	"\n" +
-	"\x0fpost/post.proto\x12\x02pb\"\x86\x01\n" +
+	"\x0fpost/post.proto\x12\x02pb\"\xb8\x01\n" +
 	"\x04Post\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1d\n" +
 	"\n" +
 	"short_desc\x18\x03 \x01(\tR\tshortDesc\x12 \n" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x17\n" +
-	"\auser_id\x18\x05 \x01(\tR\x06userIdB%Z#github.com/paweldyl/blog-backend/pbb\x06proto3"
+	"\auser_id\x18\x05 \x01(\tR\x06userId\x12\x14\n" +
+	"\x05likes\x18\x06 \x01(\x05R\x05likes\x12\x1a\n" +
+	"\bdislikes\x18\a \x01(\x05R\bdislikesB%Z#github.com/paweldyl/blog-backend/pbb\x06proto3"
 
 var (
 	file_post_post_proto_rawDescOnce sync.Once

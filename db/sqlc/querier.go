@@ -32,6 +32,7 @@ type Querier interface {
 	GetUserByLogin(ctx context.Context, login string) (User, error)
 	GetUserForUpdate(ctx context.Context, id uuid.UUID) (User, error)
 	UpdateComment(ctx context.Context, arg UpdateCommentParams) (Comment, error)
+	UpdateLikesAndDislikes(ctx context.Context, arg UpdateLikesAndDislikesParams) (Post, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error)
 	UpdatePostLike(ctx context.Context, arg UpdatePostLikeParams) (PostsLike, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)

@@ -12,5 +12,7 @@ func convertPost(post db.Post) *pb.Post {
 		ShortDesc:   post.ShortDesc,
 		Description: post.Description,
 		UserId:      post.UserID.String(),
+		Likes:       post.LikesAmount,
+		Dislikes:    post.DislikesAmount,
 	}
 }

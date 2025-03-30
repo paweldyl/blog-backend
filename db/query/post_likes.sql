@@ -14,14 +14,14 @@ WHERE user_id=$1 AND post_id=$2 LIMIT 1;
 
 -- name: GetPostLikeForUpdate :one
 SELECT * FROM posts_likes
-WHERE user_id=$1 AND post_id=$2 LIMIT 1 FOR NO KEY UPDATE;
+WHERE user_id=$1 AND post_id=$2 LIMIT 1 FOR UPDATE;
 
 -- name: UpdatePostLike :one
 UPDATE posts_likes
 SET 
     value=$1,
     updated_at = NOW()
-WHERE user_id=$1 AND post_id=$2
+WHERE user_id=$2 AND post_id=$3
 RETURNING *;
 
 -- name: DeletePostLike :exec
