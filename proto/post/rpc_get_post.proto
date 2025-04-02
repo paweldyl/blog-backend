@@ -11,7 +11,7 @@ message GetPostRequest {
 }
 
 message GetPostResponse {
-    Post post = 1;
+    PostWithUsername post = 1;
 }
 
 

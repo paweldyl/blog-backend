@@ -67,7 +67,7 @@ func (x *GetPostRequest) GetId() string {
 
 type GetPostResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Post          *Post                  `protobuf:"bytes,1,opt,name=post,proto3" json:"post,omitempty"`
+	Post          *PostWithUsername      `protobuf:"bytes,1,opt,name=post,proto3" json:"post,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -102,7 +102,7 @@ func (*GetPostResponse) Descriptor() ([]byte, []int) {
 	return file_post_rpc_get_post_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetPostResponse) GetPost() *Post {
+func (x *GetPostResponse) GetPost() *PostWithUsername {
 	if x != nil {
 		return x.Post
 	}
@@ -115,9 +115,9 @@ const file_post_rpc_get_post_proto_rawDesc = "" +
 	"\n" +
 	"\x17post/rpc_get_post.proto\x12\x02pb\x1a\x0fpost/post.proto\" \n" +
 	"\x0eGetPostRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"/\n" +
-	"\x0fGetPostResponse\x12\x1c\n" +
-	"\x04post\x18\x01 \x01(\v2\b.pb.PostR\x04postB%Z#github.com/paweldyl/blog-backend/pbb\x06proto3"
+	"\x02id\x18\x01 \x01(\tR\x02id\";\n" +
+	"\x0fGetPostResponse\x12(\n" +
+	"\x04post\x18\x01 \x01(\v2\x14.pb.PostWithUsernameR\x04postB%Z#github.com/paweldyl/blog-backend/pbb\x06proto3"
 
 var (
 	file_post_rpc_get_post_proto_rawDescOnce sync.Once
@@ -133,12 +133,12 @@ func file_post_rpc_get_post_proto_rawDescGZIP() []byte {
 
 var file_post_rpc_get_post_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_post_rpc_get_post_proto_goTypes = []any{
-	(*GetPostRequest)(nil),  // 0: pb.GetPostRequest
-	(*GetPostResponse)(nil), // 1: pb.GetPostResponse
-	(*Post)(nil),            // 2: pb.Post
+	(*GetPostRequest)(nil),   // 0: pb.GetPostRequest
+	(*GetPostResponse)(nil),  // 1: pb.GetPostResponse
+	(*PostWithUsername)(nil), // 2: pb.PostWithUsername
 }
 var file_post_rpc_get_post_proto_depIdxs = []int32{
-	2, // 0: pb.GetPostResponse.post:type_name -> pb.Post
+	2, // 0: pb.GetPostResponse.post:type_name -> pb.PostWithUsername
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

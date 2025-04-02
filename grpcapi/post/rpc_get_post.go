@@ -31,6 +31,6 @@ func (server *Server) GetPost(ctx context.Context, req *pb.GetPostRequest) (*pb.
 	}
 
 	return &pb.GetPostResponse{
-		Post: convertPost(post),
+		Post: convertPostWithUsername(post),
 	}, nil
 }

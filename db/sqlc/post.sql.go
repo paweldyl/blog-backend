@@ -8,6 +8,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -67,13 +68,30 @@ func (q *Queries) DeletePost(ctx context.Context, id uuid.UUID) error {
 }
 
 const getPost = `-- name: GetPost :one
-SELECT id, title, short_desc, description, user_id, likes_amount, dislikes_amount, updated_at, created_at FROM posts
-WHERE id=$1 LIMIT 1
+SELECT 
+  posts.id, posts.title, posts.short_desc, posts.description, posts.user_id, posts.likes_amount, posts.dislikes_amount, posts.updated_at, posts.created_at, 
+  users.username 
+FROM posts
+JOIN users ON posts.user_id = users.id
+WHERE posts.id=$1 LIMIT 1
 `
 
-func (q *Queries) GetPost(ctx context.Context, id uuid.UUID) (Post, error) {
+type GetPostRow struct {
+	ID             uuid.UUID `json:"id"`
+	Title          string    `json:"title"`
+	ShortDesc      string    `json:"short_desc"`
+	Description    string    `json:"description"`
+	UserID         uuid.UUID `json:"user_id"`
+	LikesAmount    int32     `json:"likes_amount"`
+	DislikesAmount int32     `json:"dislikes_amount"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	CreatedAt      time.Time `json:"created_at"`
+	Username       string    `json:"username"`
+}
+
+func (q *Queries) GetPost(ctx context.Context, id uuid.UUID) (GetPostRow, error) {
 	row := q.db.QueryRowContext(ctx, getPost, id)
-	var i Post
+	var i GetPostRow
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
@@ -84,6 +102,7 @@ func (q *Queries) GetPost(ctx context.Context, id uuid.UUID) (Post, error) {
 		&i.DislikesAmount,
 		&i.UpdatedAt,
 		&i.CreatedAt,
+		&i.Username,
 	)
 	return i, err
 }
@@ -111,8 +130,12 @@ func (q *Queries) GetPostForUpdate(ctx context.Context, id uuid.UUID) (Post, err
 }
 
 const getPostsListing = `-- name: GetPostsListing :many
-SELECT id, title, short_desc, description, user_id, likes_amount, dislikes_amount, updated_at, created_at FROM posts
-ORDER BY created_at DESC
+SELECT 
+  posts.id, posts.title, posts.short_desc, posts.description, posts.user_id, posts.likes_amount, posts.dislikes_amount, posts.updated_at, posts.created_at, 
+  users.username 
+FROM posts
+JOIN users ON posts.user_id = users.id
+ORDER BY posts.created_at DESC
 LIMIT $1 OFFSET $2
 `
 
@@ -121,15 +144,28 @@ type GetPostsListingParams struct {
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) GetPostsListing(ctx context.Context, arg GetPostsListingParams) ([]Post, error) {
+type GetPostsListingRow struct {
+	ID             uuid.UUID `json:"id"`
+	Title          string    `json:"title"`
+	ShortDesc      string    `json:"short_desc"`
+	Description    string    `json:"description"`
+	UserID         uuid.UUID `json:"user_id"`
+	LikesAmount    int32     `json:"likes_amount"`
+	DislikesAmount int32     `json:"dislikes_amount"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	CreatedAt      time.Time `json:"created_at"`
+	Username       string    `json:"username"`
+}
+
+func (q *Queries) GetPostsListing(ctx context.Context, arg GetPostsListingParams) ([]GetPostsListingRow, error) {
 	rows, err := q.db.QueryContext(ctx, getPostsListing, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Post{}
+	items := []GetPostsListingRow{}
 	for rows.Next() {
-		var i Post
+		var i GetPostsListingRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Title,
@@ -140,6 +176,7 @@ func (q *Queries) GetPostsListing(ctx context.Context, arg GetPostsListingParams
 			&i.DislikesAmount,
 			&i.UpdatedAt,
 			&i.CreatedAt,
+			&i.Username,
 		); err != nil {
 			return nil, err
 		}

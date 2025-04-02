@@ -74,10 +74,11 @@ func (x *GetPostsListingRequest) GetPage() int32 {
 }
 
 type GetPostsListingResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Posts         []*Post                `protobuf:"bytes,1,rep,name=posts,proto3" json:"posts,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Posts          []*PostWithUsername    `protobuf:"bytes,1,rep,name=posts,proto3" json:"posts,omitempty"`
+	NextPageExists bool                   `protobuf:"varint,2,opt,name=next_page_exists,json=nextPageExists,proto3" json:"next_page_exists,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *GetPostsListingResponse) Reset() {
@@ -110,11 +111,18 @@ func (*GetPostsListingResponse) Descriptor() ([]byte, []int) {
 	return file_post_rpc_get_posts_listing_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetPostsListingResponse) GetPosts() []*Post {
+func (x *GetPostsListingResponse) GetPosts() []*PostWithUsername {
 	if x != nil {
 		return x.Posts
 	}
 	return nil
+}
+
+func (x *GetPostsListingResponse) GetNextPageExists() bool {
+	if x != nil {
+		return x.NextPageExists
+	}
+	return false
 }
 
 var File_post_rpc_get_posts_listing_proto protoreflect.FileDescriptor
@@ -124,9 +132,10 @@ const file_post_rpc_get_posts_listing_proto_rawDesc = "" +
 	" post/rpc_get_posts_listing.proto\x12\x02pb\x1a\x0fpost/post.proto\"G\n" +
 	"\x16GetPostsListingRequest\x12\x19\n" +
 	"\bper_page\x18\x01 \x01(\x05R\aperPage\x12\x12\n" +
-	"\x04page\x18\x02 \x01(\x05R\x04page\"9\n" +
-	"\x17GetPostsListingResponse\x12\x1e\n" +
-	"\x05posts\x18\x01 \x03(\v2\b.pb.PostR\x05postsB%Z#github.com/paweldyl/blog-backend/pbb\x06proto3"
+	"\x04page\x18\x02 \x01(\x05R\x04page\"o\n" +
+	"\x17GetPostsListingResponse\x12*\n" +
+	"\x05posts\x18\x01 \x03(\v2\x14.pb.PostWithUsernameR\x05posts\x12(\n" +
+	"\x10next_page_exists\x18\x02 \x01(\bR\x0enextPageExistsB%Z#github.com/paweldyl/blog-backend/pbb\x06proto3"
 
 var (
 	file_post_rpc_get_posts_listing_proto_rawDescOnce sync.Once
@@ -144,10 +153,10 @@ var file_post_rpc_get_posts_listing_proto_msgTypes = make([]protoimpl.MessageInf
 var file_post_rpc_get_posts_listing_proto_goTypes = []any{
 	(*GetPostsListingRequest)(nil),  // 0: pb.GetPostsListingRequest
 	(*GetPostsListingResponse)(nil), // 1: pb.GetPostsListingResponse
-	(*Post)(nil),                    // 2: pb.Post
+	(*PostWithUsername)(nil),        // 2: pb.PostWithUsername
 }
 var file_post_rpc_get_posts_listing_proto_depIdxs = []int32{
-	2, // 0: pb.GetPostsListingResponse.posts:type_name -> pb.Post
+	2, // 0: pb.GetPostsListingResponse.posts:type_name -> pb.PostWithUsername
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

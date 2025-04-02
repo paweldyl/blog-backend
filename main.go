@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"log"
 	"net"
+	"net/http"
 
 	_ "github.com/golang/mock/gomock"
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	_ "github.com/lib/pq"
 	db "github.com/paweldyl/blog-backend/db/sqlc"
 	"github.com/paweldyl/blog-backend/grpcapi/comment"
@@ -61,14 +63,33 @@ func runGrpcServer(config util.Config, store db.Store) {
 	postlikepb.RegisterPostLikeServiceServer(grpcServer, postLikeServer)
 	reflection.Register(grpcServer)
 
-	listener, err := net.Listen("tcp", config.ServerAddress)
-	if err != nil {
-		log.Fatal("cannot create listener")
-	}
+	// Start native gRPC server for postman etc.
+	go func() {
+		listener, err := net.Listen("tcp", config.ServerAddress)
+		if err != nil {
+			log.Fatalf("failed to listen on %v: %v", config.ServerAddress, err)
+		}
+		log.Printf("gRPC server running at %v (native gRPC)", config.ServerAddress)
+		if err := grpcServer.Serve(listener); err != nil {
+			log.Fatalf("failed to serve gRPC: %v", err)
+		}
+	}()
 
-	log.Printf("start gRPC server at %s", listener.Addr().String())
-	err = grpcServer.Serve(listener)
-	if err != nil {
-		log.Fatal("cannot start gRPC server")
+	// Start gRPC-Web server for frontend
+	wrappedGrpc := grpcweb.WrapServer(grpcServer, grpcweb.WithOriginFunc(func(origin string) bool {
+		return true
+	}))
+
+	httpServer := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if wrappedGrpc.IsGrpcWebRequest(r) || wrappedGrpc.IsAcceptableGrpcCorsRequest(r) {
+			wrappedGrpc.ServeHTTP(w, r)
+		} else {
+			http.NotFound(w, r)
+		}
+	})
+
+	log.Printf("gRPC-Web server running at %v", config.WebServerAddress)
+	if err := http.ListenAndServe(config.WebServerAddress, httpServer); err != nil {
+		log.Fatalf("failed to start gRPC-Web HTTP server: %v", err)
 	}
 }

@@ -13,3 +13,14 @@ message Post {
     int32 likes = 6;
     int32 dislikes = 7;
 }
+
+message PostWithUsername {
+    string id = 1;
+    string title = 2;
+    string short_desc = 3;
+    string description = 4;
+    string user_id = 5;
+    string username = 6;
+    int32 likes = 7;
+    int32 dislikes = 8;
+}

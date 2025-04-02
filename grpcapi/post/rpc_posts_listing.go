@@ -23,9 +23,12 @@ func (server *Server) GetPostsListing(ctx context.Context, req *pb.GetPostsListi
 		return nil, api.InvalidArgumentError(violations)
 	}
 
+	limit := req.GetPerPage()
+	page := req.GetPage()
+
 	arg := db.GetPostsListingParams{
-		Limit:  req.GetPerPage(),
-		Offset: req.GetPage() * req.GetPerPage(),
+		Limit:  limit + 1,
+		Offset: page * limit,
 	}
 
 	posts, err := server.Store.GetPostsListing(ctx, arg)
@@ -33,13 +36,19 @@ func (server *Server) GetPostsListing(ctx context.Context, req *pb.GetPostsListi
 		return nil, status.Errorf(codes.Internal, "failed to list posts: %s", err)
 	}
 
-	var pbPosts []*pb.Post
+	nextPageExists := len(posts) > int(limit)
+	if nextPageExists {
+		posts = posts[:limit]
+	}
+
+	var pbPosts []*pb.PostWithUsername
 	for _, post := range posts {
-		pbPosts = append(pbPosts, convertPost(post))
+		pbPosts = append(pbPosts, convertPostFromListing(post))
 	}
 
 	return &pb.GetPostsListingResponse{
-		Posts: pbPosts,
+		Posts:          pbPosts,
+		NextPageExists: nextPageExists,
 	}, nil
 }
 

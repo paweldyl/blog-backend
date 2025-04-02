@@ -77,13 +77,13 @@ func validateUpdatePostRequest(req *pb.UpdatePostRequest) (violations []*errdeta
 		violations = append(violations, api.FieldViolation("title", err))
 	}
 	if req.ShortDesc != nil {
-		if len(req.GetShortDesc()) < 10 || len(req.GetShortDesc()) > 200 {
-			err := fmt.Errorf("short_desc must contain between 10 and 200 signs")
+		if len(req.GetShortDesc()) < 3 || len(req.GetShortDesc()) > 500 {
+			err := fmt.Errorf("short_desc must contain between 3 and 500 signs")
 			violations = append(violations, api.FieldViolation("short_desc", err))
 		}
 	}
-	if req.Description != nil && len(req.GetDescription()) < 10 {
-		err := fmt.Errorf("description must be at least 10 signs")
+	if req.Description != nil && len(req.GetDescription()) < 3 {
+		err := fmt.Errorf("description must be at least 3 signs")
 		violations = append(violations, api.FieldViolation("description", err))
 	}
 	return violations

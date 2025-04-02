@@ -16,3 +16,29 @@ func convertPost(post db.Post) *pb.Post {
 		Dislikes:    post.DislikesAmount,
 	}
 }
+
+func convertPostWithUsername(post db.GetPostRow) *pb.PostWithUsername {
+	return &pb.PostWithUsername{
+		Id:          post.ID.String(),
+		Title:       post.Title,
+		ShortDesc:   post.ShortDesc,
+		Description: post.Description,
+		UserId:      post.UserID.String(),
+		Username:    post.Username,
+		Likes:       post.LikesAmount,
+		Dislikes:    post.DislikesAmount,
+	}
+}
+
+func convertPostFromListing(post db.GetPostsListingRow) *pb.PostWithUsername {
+	return &pb.PostWithUsername{
+		Id:          post.ID.String(),
+		Title:       post.Title,
+		ShortDesc:   post.ShortDesc,
+		Description: post.Description,
+		UserId:      post.UserID.String(),
+		Username:    post.Username,
+		Likes:       post.LikesAmount,
+		Dislikes:    post.DislikesAmount,
+	}
+}

@@ -11,16 +11,24 @@ INSERT INTO posts(
 RETURNING *;
 
 -- name: GetPost :one
-SELECT * FROM posts
-WHERE id=$1 LIMIT 1;
+SELECT 
+  posts.*, 
+  users.username 
+FROM posts
+JOIN users ON posts.user_id = users.id
+WHERE posts.id=$1 LIMIT 1;
 
 -- name: GetPostForUpdate :one
 SELECT * FROM posts
 WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE;
 
 -- name: GetPostsListing :many
-SELECT * FROM posts
-ORDER BY created_at DESC
+SELECT 
+  posts.*, 
+  users.username 
+FROM posts
+JOIN users ON posts.user_id = users.id
+ORDER BY posts.created_at DESC
 LIMIT $1 OFFSET $2;
 
 -- name: UpdatePost :one

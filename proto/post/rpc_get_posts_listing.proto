@@ -12,7 +12,8 @@ message GetPostsListingRequest {
 }
 
 message GetPostsListingResponse {
-    repeated Post posts = 1;
+    repeated PostWithUsername posts = 1;
+    bool next_page_exists = 2;
 }
 
 
